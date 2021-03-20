@@ -1,0 +1,601 @@
+<!doctype html>
+
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300&display=swap" rel="stylesheet">
+
+    <script src="fpsMeterStats/stats.min.js"></script>
+    <script src="greadability/greadability.js"></script>
+    <script src="ogdf_build/ogdf.js"></script>
+    <script src="sigma_build/sigma.min.js"></script>
+    <script src="sigma_build/plugins/sigma.plugins.dragNodes.min.js"></script>
+
+    <meta charset="utf-8">
+
+    <title>Graph</title>
+
+    <style>
+        
+        * {
+            font-family: 'JetBrains Mono', monospace;
+            box-sizing: border-box;
+        }
+
+        header {
+            margin: 0;
+            background-color: rgb(145, 40, 40);
+            padding: 5px;
+            text-align: left;
+            width: 100%;
+            font-size: 20px;
+            color: black;
+            padding-left: 30px;
+        }
+        
+       
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            min-width: 1400px;
+        }
+
+        #specifics {
+            font-size: 15px;
+            width: 100%;
+            height: 60px;
+            background-color: rgb(236, 199, 163);
+            padding: 5px 5px 5px;
+        }
+
+        #data {
+            text-align: left;
+            float: left;
+            width: 50%;
+            height: 100%;
+
+        }
+
+        #specifics:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        #data:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        #buttongraph {
+            text-align: left;
+            float: left;
+            width: 20%;
+            height: 100%;
+            bottom: 5px;
+
+        }
+
+        #description {
+            min-width: 500px;
+            display: block;
+            text-align: left;
+            position: relative;
+            float: right;
+            font-size: 14px;
+            width: 80%;
+            height: 100%;
+            bottom: 5px;
+            padding: 6px;
+            line-height: 50px;
+            padding-left: 50px;
+
+        }
+
+
+        #greadability {
+            text-align: left;
+            float: right;
+            width: 50%;
+            height: 100%;
+
+        }
+
+        #greadabilityDesc{
+            display: block;
+            text-align: left;
+            position: relative;
+            float: right;
+            font-size: 14px;
+            width: 75%;
+            height: 100%;
+            bottom: 5px;
+            padding: 6px;
+            line-height: 50px;
+            padding-left: 10px;
+        }
+
+        #graph {
+            padding: 5px;
+            min-width: 1400px;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            background-color: rgb(192, 176, 176);
+        }
+
+
+        #greadButt{
+            float: left;
+            width: 25%;
+        }
+
+
+        #fpsmeterstat{
+            padding: 25px;
+            float: left;
+            position: relative;
+            width: 10px;
+            height: 50px;
+ 
+        }
+
+        .wrapper {
+            height: 100%;
+            top: 5px;
+            position: relative;
+
+        }
+
+         .inputfile {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        .inputfile+label , a{
+            display: block;
+            width: 170px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            text-decoration: none;
+            color: #333; 
+            text-align: center;
+            position: relative;
+         }
+        
+        .inputfile+label span, a{
+            position: relative;
+            z-index: 2;
+            text-decoration: underline;
+        }
+        
+        .inputfile+label:after ,a:after{
+            position: absolute;
+            content: "";
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%; 
+        }
+
+        .inputfile+label:hover , a:hover{
+            cursor: pointer;
+            color: rgb(39, 37, 134);
+        }
+
+        .inputfile+label:hover:after {
+            width: 100%;
+        }
+
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 400px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            margin-top: 5px;
+            padding: 5px 0;
+            
+            /* Position the tooltip */
+            position: absolute;
+            z-index: 1;
+            top: 100%;
+            left: 50%;
+            margin-left: -60px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 0.6;
+        }
+
+       
+    </style>
+
+
+</head>
+
+<body>
+    <header>
+            <h2>
+                Graph Visualizzation
+            </h2>
+ 
+            <i class="fas fa-info"></i>
+            <h6>
+                You can visualize a graph by load it and you can see the amount of nodes, edges and the time of execution.</br>
+                The Greadability's button allowd you to compute the graph's readability. 
+                Each is a number in the range [0, 1] with higher numbers indicating better layouts.
+
+            </h6>
+          
+            
+    </header>
+
+
+    <div id="specifics">
+
+        <div id="data">
+            <div class="wrapper" id="buttongraph">
+
+                <input type="file" name="file" id="file" class="inputfile">
+                <label id="labelInsert" for="file"> <span>Choose a Graph</span> </label>
+
+
+            </div>
+            <div id="description">
+     
+            </div>
+
+        </div>
+
+        <div id="greadability">
+            <div class="wrapper" id="greadButt">
+                <a class="button" id="greadButton" onclick="startWorker()"><span>Greadability</span></a>
+            </div>
+            <div id="greadabilityDesc">
+     
+            </div>
+        </div>
+
+    </div>
+
+    <div id="graph">
+        <div id="fpsmeterstat"></div>
+   </div>
+
+
+    </div>
+
+
+
+
+    <script>
+
+
+
+      
+
+        var stats = new Stats();
+        stats.dom.style.position = 'relative';
+        stats.dom.style.float = 'left';
+        document.getElementById("fpsmeterstat").appendChild( stats.dom );
+
+        function animate() {
+
+            stats.update();
+            requestAnimationFrame( animate );
+
+        }
+
+        animate();
+
+
+
+
+
+        let isJson = false
+
+        var inputs = document.querySelectorAll('.inputfile');
+        Array.prototype.forEach.call(inputs, function (input) {
+
+            var labelVal = document.getElementById('labelInsert').innerHTML;
+
+            input.addEventListener('change', function (e) {
+
+                var fileName = ' ';
+
+                fileName = e.target.value.split('\\')[2];
+
+
+                fileName = fileName.split('\.')[0];
+
+
+                if (fileName)
+                    document.getElementById('description').innerHTML = fileName + " - ";
+                else
+                    document.getElementById('description').innerHTML = labelVal ;
+
+            });
+        });
+ 
+
+
+
+        
+        let graph = {"nodes": [], "edges":[]};
+
+
+
+        var s = new sigma({
+            renderer: {
+                container: document.getElementById('graph'),
+                type: 'canvas'
+            },
+            settings: {
+                minArrowSize: 6,
+                scalingMode: "outside",
+                minNodeSize:1,
+                maxNodeSize: 4
+
+            }
+            }
+        );
+
+ 
+
+        document.getElementById('file').onchange = function(){
+
+            
+            if(graph.nodes.length != 0){
+                graph.nodes.length = 0;
+                graph.edges.length = 0; 
+               
+            }
+
+            s.graph.clear();
+
+            var file = this.files[0];
+            var reader = new FileReader();
+            let nodesarr = new Array();
+
+                
+            reader.onload = function(progressEvent){ 
+
+                var lines = this.result.split('\n');
+
+            
+                if(this.result[0]=="["){
+                    
+                    console.log(lines.length)
+
+                    for(let line = 0; line <(lines.length-1); line++){
+
+                        let tab = lines[line].substring(1,lines[line].length - 2);
+                        let firstSplit = tab.split("[")
+                        let firstPart = firstSplit[0].split(",");
+                        let sourceNode = firstPart[0];
+                        let xSourceNode = firstPart[1];
+                        let ySourceNode = firstPart[2];
+                        let listNode = firstSplit[1].split(",");
+                            
+                        if(nodesarr[sourceNode]!=1){
+                            nodesarr[sourceNode]= 1;
+                            graph.nodes.push({
+                                "id": sourceNode
+                            });
+                        }
+
+                        for(let i in listNode){
+                            let target = listNode[i]
+                            if(nodesarr[target]!=1){
+                                nodesarr[target] = 1;                            
+                                graph.nodes.push({
+                                    "id": target
+                                });  
+                            }
+
+                            graph.edges.push({"source": sourceNode,"target":target});
+
+                        }
+                    }
+
+
+                }else{
+                    // By lines
+                    for(var line = 0; line < lines.length; line++){
+
+                        //let tab = lines[line].split('\t');
+                        let tab = lines[line].split(' ');
+                        //let tab = lines[line].split(',');
+                        let source = tab[0];
+                        let target = tab[1];
+
+                        if(nodesarr[source]!=1){
+                            nodesarr[source]= 1;
+                            
+                            graph.nodes.push({
+                                "id": source
+                            });
+                        
+                        }
+
+                        if(nodesarr[target]!=1){
+                            nodesarr[target] = 1;
+                            
+                            graph.nodes.push({
+                                "id": target
+                            });  
+                        }
+
+                        graph.edges.push({"source": source,"target":target});
+                    }
+                
+                }
+
+
+                dataLoaded();
+
+
+            };
+
+            reader.readAsText(file);
+            
+        };
+        
+
+        function dataLoaded(){
+            console.log("dati letti ");
+            console.log("node "+ graph.nodes.length);
+            console.log("edge "+ graph.edges.length);
+            drawGraph();
+        }
+
+
+        function drawGraph(){
+            
+            document.getElementById('description').innerHTML += ' Nodes: ' + graph.nodes.length + ' Edges: ' + graph.edges.length;
+            let t0 = performance.now()
+
+            
+            initOGDF().then(function(Module){
+
+                dic = {}
+                for(let i = 0; i < graph.nodes.length; ++i) {
+                    if(graph.nodes[i]['id'] in dic) {
+                        console.log('there is a bug');
+                    } else  dic[graph.nodes[i]['id']] = i;
+                }
+
+                let nodes = graph.nodes.length;
+                let links = graph.edges.length;
+                let source = Module._malloc(4 * links);
+                let target = Module._malloc(4 * links);
+
+                // store the edge information to wasm array
+                for (let i = 0; i < links; ++i) {
+                    
+                    Module.HEAP32[source / 4 + i] = dic[graph.edges[i].source]; 
+                    Module.HEAP32[target / 4 + i] = dic[graph.edges[i].target]; 
+
+                }
+
+                let result = Module._FM3(nodes, links, source, target);
+                
+                
+                    // get nodes position from result
+                for (let i = 0; i < nodes; ++i) {
+                    graph.nodes[i]['x'] = Module.HEAPF32[(result >> 2) + i * 2];
+                    graph.nodes[i]['y'] = Module.HEAPF32[(result >> 2) + i * 2 + 1];
+                    s.graph.addNode({
+                        "id" : graph.nodes[i]['id'],
+                        //label : graph.nodes[i]['id'],
+                        size: 0.5,
+                        x: graph.nodes[i]['x'],
+                        y: graph.nodes[i]['y'],
+                        color: '#EE651D'
+                    });
+                }
+
+                for (let i = 0; i < links; ++i) {
+                    graph.edges[i]['source'] = graph.nodes[dic[graph.edges[i]['source']]];
+                    graph.edges[i]['target'] = graph.nodes[dic[graph.edges[i]['target']]];
+
+                    s.graph.addEdge({
+                        "id": 'e'+i,
+                        "source": graph.edges[i]['source']['id'],
+                        "target": graph.edges[i]['target']['id'],
+                        color: "#202020",
+                        type: 'curvedArrow'
+                    });
+                } 
+
+            
+ 
+                let dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
+                
+                
+                s.refresh();
+
+ 
+
+                let t1 = performance.now()
+                console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.") 
+                
+
+                document.getElementById('description').innerHTML +=  ' -  Execution time ' + (t1 - t0).toFixed() + ' ms.';
+
+
+                
+                
+                Module._free(source);
+                Module._free(target);
+                Module._free_buf(result);
+
+                console.log("finish");
+                    
+
+            });
+        }
+
+
+        function startWorker() {
+
+            console.log("start worker")
+            if (typeof (Worker) !== "undefined") {
+
+                w = new Worker("greadabilityWorker.js");
+                document.getElementById('greadabilityDesc').innerHTML = "Loading...";
+
+                w.postMessage(graph);
+                w.onmessage = function (e) {
+
+                    if (e.data == false) {
+                        document.getElementById('greadabilityDesc').innerHTML = "Graph is needed to compute the greadability";
+
+                    } else {
+                        document.getElementById('greadabilityDesc').innerHTML = 
+                            '<div class="tooltip">ARD:<span class="tooltiptext">Angular resoluction (deviation) measures the average deviation of angles between incident edges on each vertex.</span></div>'
+                            + e.data.angularResolutionDev.toFixed(4)
+                            + ' - <div class="tooltip">ARM:<span class="tooltiptext">Angular resolution (minimum) measures the mean deviation of adjacent incident edge angles from the ideal minimum angles (360 degrees divided by the degree of that node).</span></div>'
+                             + e.data.angularResolutionMin.toFixed(4) + 
+                             ' - <div class="tooltip">C:<span class="tooltiptext"> Edge crossings measures the fraction of edges that cross (intersect) out of an approximate maximum number that can cross.</span></div>' + e.data.crossing.toFixed(4) +
+                            ' - <div class="tooltip">CA:<span class="tooltiptext"> Edge crossing angle measures the mean deviation of edge crossing angles from the ideal edge crossing angle (70 degrees).</span></div>' + e.data.crossingAngle.toFixed(4);
+
+                    }
+                   
+                }
+            } else {
+
+            }
+        }
+
+         
+        
+        
+
+
+    </script>
+
+</body>
+
+</html>
